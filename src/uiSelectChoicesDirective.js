@@ -33,10 +33,14 @@ uis.directive('uiSelectChoices',
 
         $select.dropdownPosition = attrs.position ? attrs.position.toLowerCase() : uiSelectConfig.dropdownPosition;
 
+        var groups = element.querySelectorAll('.ui-select-choices-group');
         if(groupByExp) {
-          var groups = element.querySelectorAll('.ui-select-choices-group');
           if (groups.length !== 1) throw uiSelectMinErr('rows', "Expected 1 .ui-select-choices-group but got '{0}'.", groups.length);
           groups.attr('ng-repeat', RepeatParser.getGroupNgRepeatExpression());
+        } else {
+          groups
+            .attr('vs-repeat', '')
+            .attr('vs-scroll-parent', '.ui-select-choices');
         }
 
         var choices = element.querySelectorAll('.ui-select-choices-row');
@@ -59,6 +63,7 @@ uis.directive('uiSelectChoices',
               .attr('ng-click', '$select.select(' + $select.parserResult.itemName + ',false,$event)');
         }
 
+        scope.transcludeFn = transcludeFn;
         $compile(element, transcludeFn)(scope); //Passing current transcludeFn to be able to append elements correctly from uisTranscludeAppend
 
         scope.$watch('$select.search', function(newValue) {
